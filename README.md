@@ -32,3 +32,10 @@ You should see "Hello world!"
 ```
 docker-compose down
 ```
+
+# Doing your own service
+
+Get familiar with contents of app directory - it's contents are copied into /src/
+directory in container.
+
+When container starts, it runs app.js script.
