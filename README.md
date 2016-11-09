@@ -21,7 +21,9 @@ docker-compose exec web bash
 
 # Accessing web service
 
-Go to http://<docker-machine-ip>:3000
+Edit your hosts file and add your docker machine ip to localhost
+
+Go to http://localhost:3000
 
 You should see "Hello world!"
 
