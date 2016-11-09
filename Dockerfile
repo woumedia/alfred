@@ -1,5 +1,7 @@
 FROM node:7
 
+RUN npm install supervisor -g
+
 RUN mkdir /src
 
 WORKDIR /src
@@ -8,4 +10,4 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD node app/app
+CMD supervisor -w app app/app.js
