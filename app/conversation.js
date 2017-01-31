@@ -4,7 +4,7 @@ var starter = require('./conversation/starter');
 var runner = require('./conversation/runner');
 
 function dispatchCommand(dispatcher, req, res) {
-  dispatcher(req.body.text)(req.body.team_id)
+  dispatcher(req.body.text)(req.body)
     .then(function(result) {
       res.send(result);
     }, function(error) {

@@ -22,7 +22,7 @@ function parseStarterCommand(text) {
   }
 }
 
-function addStarter(text, team_id) {
+function addStarter(text, {team_id}) {
   return db.addStarter(text, team_id)
     .then(function(resp) {
       return Promise.resolve({
@@ -36,7 +36,7 @@ function formatSnap(snap) {
   return snap.key + "\t" + snap.val().text + "\n";
 }
 
-function listStarters(team_id) {
+function listStarters({team_id}) {
   return db.listStarters(team_id)
     .then(function(result) {
       var text = db.mapResult(result, formatSnap).join("\n");
@@ -47,7 +47,7 @@ function listStarters(team_id) {
     });
 }
 
-function removeStarter(id, team_id) {
+function removeStarter(id, {team_id}) {
   return db.removeStarter(id, team_id)
     .then(function(snapshot) {
       return Promise.resolve({

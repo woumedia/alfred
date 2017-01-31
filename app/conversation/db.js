@@ -43,12 +43,22 @@ function mapResult(collection, callback) {
   return elements;
 }
 
+function setCurrentConversation(text, channel_id, team_id) {
+  var ref = database.ref("conversations/" + team_id).push({text: text});
+  return ref
+    .then(function(ref) {
+      return database.ref("conversations/" + team_id + "/current")
+        .set({key: ref.key, channelId: channel_id});
+    });
+}
+
 module.exports = {
   addStarter: addStarter,
   listStarters: listStarters,
   getLeastUsedStarter: getLeastUsedStarter,
   removeStarter: removeStarter,
   updateStarter: updateStarter,
+  setCurrentConversation: setCurrentConversation,
   mapResult: mapResult,
   Promise: firebase.Promise
 };
