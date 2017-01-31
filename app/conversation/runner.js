@@ -1,6 +1,5 @@
-var firebase = require('../firebase-client');
-var database = firebase.database();
-var Promise = firebase.Promise;
+var db = require("./db");
+var Promise = db.Promise;
 
 function parseRunnerCommand(text) {
   var results = /^(start|stats)( (.*))?$/.exec(text);
@@ -22,10 +21,20 @@ function parseRunnerCommand(text) {
 }
 
 function startConversation(team_id) {
-  return Promise.resolve({
-    response_type: "ephemeral",
-    text: "not implemented"
-  });
+  var starter = db.getLeastUsedStarter(team_id);
+
+  return starter
+    .then(function(result) {
+      var timesUsed = (result.val().timesUsed || 0) + 1;
+      return db
+        .updateStarter(result.key, team_id, {timesUsed})
+        .then(function() {
+          return Promise.resolve({
+            response_type: "in_channel",
+            text: "Today's topic: " + result.val().text
+          });
+        });
+    });
 }
 
 function printStats(team_id) {
