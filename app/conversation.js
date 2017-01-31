@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var firebase = require('./firebase-client');
-var database = firebase.database();
 
 function parseCommand(text) {
   var results = /^(add|list|remove)( (.*))?$/.exec(text);
@@ -25,36 +24,47 @@ function parseCommand(text) {
 }
 
 function addStarter(text) {
-  return {
-    response_type: "ephemeral",
-    text: "add not implemented"
-  };
+  return firebase.database().ref("starters")
+    .push({
+      text: text
+    })
+    .then(function (resp) {
+      return firebase.Promise.resolve({
+        response_type: "ephemeral",
+        text: "Added new conversation starter: " + text
+      });
+    });
 }
 
 function listStarters() {
-  return {
+  return firebase.Promise.resolve({
     response_type: "ephemeral",
     text: "list not implemented"
-  };
+  });
 }
 
 function removeStarter(id) {
-  return {
+  return firebase.Promise.resolve({
     response_type: "ephemeral",
     text: "remove not implemented"
-  };
+  });
 }
 
 function invalidCommand() {
-  return {
+  return firebase.Promise.resolve({
     response_type: "ephemeral",
     text: "Invalid command."
-  };
+  });
 }
 
 router.post('/starters', function (req, res) {
-  var response = parseCommand(req.body.text)();
-  res.send(response);
+  parseCommand(req.body.text)()
+    .then(function(result) {
+      res.send(result);
+    }, function (error) {
+      console.error(error);
+      return res.send("An error occurred");
+    });
 });
 
 module.exports = router;
