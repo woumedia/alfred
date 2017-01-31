@@ -1,4 +1,4 @@
-var firebase = require('./firebase-client');
+var firebase = require('../firebase-client');
 var database = firebase.database();
 var Promise = firebase.Promise;
 
