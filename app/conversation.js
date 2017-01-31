@@ -36,11 +36,28 @@ function addStarter(text) {
     });
 }
 
-function listStarters() {
-  return firebase.Promise.resolve({
-    response_type: "ephemeral",
-    text: "list not implemented"
+function map(collection, callback) {
+  var elements = [];
+  collection.forEach(function(element) {
+    elements.push(callback(element));
   });
+  return elements;
+}
+
+function formatSnap(snap) {
+  return snap.key + "\t" + snap.val().text + "\n";
+}
+
+function listStarters() {
+  return firebase.database().ref("starters")
+    .once("value")
+    .then(function(snapshot) {
+      var text = map(snapshot, formatSnap).join("\n");
+      return firebase.Promise.resolve({
+        response_type: "ephemeral",
+        text: "Recorded starters:\n\n" + text
+      });
+    });
 }
 
 function removeStarter(id) {
