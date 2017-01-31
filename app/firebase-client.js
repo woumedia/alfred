@@ -10,4 +10,6 @@ var config = {
 
 firebase.initializeApp(config);
 
-module.export = firebase;
+module.exports = {
+  database: firebase.database
+};
