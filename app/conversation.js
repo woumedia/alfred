@@ -28,7 +28,7 @@ function addStarter(text) {
     .push({
       text: text
     })
-    .then(function (resp) {
+    .then(function(resp) {
       return firebase.Promise.resolve({
         response_type: "ephemeral",
         text: "Added new conversation starter: " + text
@@ -44,10 +44,20 @@ function listStarters() {
 }
 
 function removeStarter(id) {
-  return firebase.Promise.resolve({
-    response_type: "ephemeral",
-    text: "remove not implemented"
-  });
+  var ref = firebase.database().ref("starters/" + id);
+
+  return ref.once("value")
+    .then(function(snapshot) {
+      var text = snapshot.val().text;
+      return ref
+        .remove()
+        .then(function() {
+          return firebase.Promise.resolve({
+            response_type: "ephemeral",
+            text: "Removed conversation starter: " + text
+          });
+        });
+    });
 }
 
 function invalidCommand() {
