@@ -1,6 +1,5 @@
 var firebase = require('../firebase-client');
 var database = firebase.database();
-var Promise = firebase.Promise;
 
 function addStarter(text, team_id) {
   return database.ref("starters/" + team_id).push({text: text});
@@ -59,6 +58,5 @@ module.exports = {
   removeStarter: removeStarter,
   updateStarter: updateStarter,
   setCurrentConversation: setCurrentConversation,
-  mapResult: mapResult,
-  Promise: firebase.Promise
+  mapResult: mapResult
 };

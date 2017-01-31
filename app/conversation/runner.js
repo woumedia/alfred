@@ -1,5 +1,4 @@
 var db = require("./db");
-var Promise = db.Promise;
 
 function parseRunnerCommand(text) {
   var results = /^(start|stats)( (.*))?$/.exec(text);

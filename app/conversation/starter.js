@@ -1,5 +1,4 @@
 var db = require("./db");
-var Promise = db.Promise;
 
 function parseStarterCommand(text) {
   var results = /^(add|list|remove)( (.*))?$/.exec(text);
