@@ -16,10 +16,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
 app.use('/conversation', conversation);
 
 app.post('/event', function(req, res) {
@@ -33,7 +29,7 @@ app.post('/event', function(req, res) {
 app.get('/oauth/slack', function(req, res) {
   oauth(req.query.code)
     .then(function() {
-      res.sendStatus(200);
+      res.redirect("/success.html");
     }, function() {
       res.sendStatus(403);
     });
