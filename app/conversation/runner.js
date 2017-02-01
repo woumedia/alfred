@@ -63,9 +63,9 @@ function startConversation({team_id, channel_id}) {
         .then(function() {
           return Promise.resolve({
             response_type: "in_channel",
-            text: `Today's topic ${text} :nerd_face:
+            text: `Today's topic: ${text} :nerd_face:
 
-Remember to mention me in the reply:robot_face:. All the team members can vote for the best share by adding reactions to posts. Post with the most reactions wins!:raised_hands:
+Remember to mention me in the reply :robot_face:. All the team members can vote for the best share by adding reactions to posts. Post with the most reactions wins! :raised_hands:
 `
           });
         });
