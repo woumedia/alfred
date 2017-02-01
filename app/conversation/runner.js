@@ -28,7 +28,7 @@ function buildResult(result) {
   var allResults = Object.keys(result.results)
       .map(userId => `<@${userId}> got ${result.results[userId]} points`)
       .join("\n");
-  var winner =  `<@${result.winner.userId}> won with ${result.winner.points} points\n\n`;
+  var winner =  `<@${result.winner.userId}> is winning with ${result.winner.points} points\n\n`;
 
   return winner + allResults;
 }
@@ -85,10 +85,13 @@ function wrapUpConversation({team_id}) {
 }
 
 function printStats({team_id}) {
-  return Promise.resolve({
-    response_type: "ephemeral",
-    text: "not implemented"
-  });
+  return db.loadStats(team_id)
+    .then(function(stats) {
+      return Promise.resolve({
+        response_type: "ephemeral",
+        text: buildResult(stats)
+      });
+    });
 }
 
 function invalidCommand() {

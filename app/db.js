@@ -81,7 +81,7 @@ function calculateResult(messages) {
     winner: {
       userId: winner.userId,
       points: _.size(winner.reactions),
-      text: winner.text
+      text: winner.texdb.getTeamt
     },
     results: results
   };
@@ -101,6 +101,22 @@ function finishConversation(teamId) {
       } else {
         return Promise.resolve();
       }
+    });
+}
+
+function loadStats(teamId) {
+  return database.ref("conversations/" + teamId)
+    .once("value")
+    .then(function(snapshot) {
+      var results = _.compact(_.map(snapshot.val(), 'results'))
+          .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => lhs + rhs));
+      var unzipped = _.toPairs(results)
+          .map(([userId, points]) => { return {userId, points}; });
+      var winner = _.maxBy(unzipped, 'score');
+      return Promise.resolve({
+        winner: winner,
+        results: results
+      });
     });
 }
 
@@ -177,5 +193,6 @@ module.exports = {
   removeReaction: removeReaction,
   setTeamData: setTeamData,
   getTeamData: getTeamData,
-  mapResult: mapResult
+  mapResult: mapResult,
+  loadStats: loadStats
 };
