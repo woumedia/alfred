@@ -21,6 +21,7 @@ app.get('/', function (req, res) {
 app.use('/conversation', conversation);
 
 app.post('/event', function(req, res) {
+  console.log("/event request", req.body);
   if (req.body.token === verificationToken) {
     eventRouter.dispatch(req.body, res);
   } else {
