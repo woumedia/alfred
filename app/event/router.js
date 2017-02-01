@@ -1,15 +1,8 @@
 var subscriptions = {};
 
 function subscribe(ref, eventType, teamId, filters, callback) {
-  subscriptions[eventType] = subscriptions[eventType] || {};
-  subscriptions[eventType][teamId] = subscriptions[eventType][teamId] || {};
-  subscriptions[eventType][teamId][ref] = {filters, callback};
-}
-
-function unsubscribe(ref) {
-  for (var eventType in subscriptions) {
-    delete subscriptions[eventType][ref];
-  }
+  subscriptions[eventType] = subscriptions[eventType] || [];
+  subscriptions[eventType].push(callback);
 }
 
 function dispatch(data, res) {
@@ -19,34 +12,19 @@ function dispatch(data, res) {
     break;
   case "event_callback":
     var event = data.event;
-    var callable = subscriptions[event.type][data.team_id] || {};
-    var matched = false;
-    for (var ref in callable) {
-      if (matches(event, callable[ref].filters)) {
-        matched = true;
-        callable[ref].callback(event, res);
-      }
-    }
-    if (!matched) {
-      res.status(204).send("");
-    }
+    var callbacks = subscriptions[event.type] || [];
+    callbacks.forEach(function(callback) {
+      callback(event);
+    });
+    res.status(204).send("");
     break;
   default:
+    console.error("Unknown event type: " + data.type);
     res.status(500).send("Unkown event type: " + data.type);
   }
 }
 
-function matches(event, filter) {
-  for (var key in filter) {
-    if (event[key] != filter[key]) {
-      return false;
-    }
-  }
-  return true;
-}
-
 module.exports = {
   subscribe: subscribe,
-  unsubscribe: unsubscribe,
   dispatch: dispatch
 };

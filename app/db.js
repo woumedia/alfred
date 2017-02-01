@@ -58,8 +58,52 @@ function setCurrentConversation(text, channel_id, team_id) {
   return ref
     .then(function(ref) {
       return database.ref("conversations/" + team_id + "/current")
-        .set({key: ref.key, channelId: channel_id});
+        .set({key: ref.key, channelId: channel_id, started: new Date()});
     });
+}
+
+function getConversationChannelId(teamId) {
+  return database.ref("conversations/" + team_id + "/current/channelId")
+    .once("value")
+    .then(function(snapshot) {
+      if (snapshot.exists()) {
+        return Promise.resolve(snapshot.val());
+      } else {
+        return Promise.reject();
+      }
+    });
+}
+
+function recordConversationMessage(text, userId, ts, teamId) {
+  return database.ref("conversations/" + teamId + "/current/messages/" + ts)
+    .set({
+      text: text,
+      userId: userId
+    });
+}
+
+function getConversationMessage(ts, teamId) {
+  return database.ref("conversations/" + teamId + "/current/messages/" + ts)
+    .once("value")
+    .then(function(snapshot) {
+      if (snapshot.exists()) {
+        return Promise.resolve(snapshot.val());
+      } else {
+        return Promise.reject();
+      }
+    });
+}
+
+function addReaction(ts, userId, reaction, teamId) {
+  var unique = userId + "-" + reaction;
+  var key = "conversations/" + teamId + "/current/messages/" + ts + "/reactions";
+  return database.ref(key).child(unique).set(true);
+}
+
+function removeReaction(ts, userId, reaction, teamId) {
+  var unique = userId + "-" + reaction;
+  var key = "conversations/" + teamId + "/current/messages/" + ts + "/reactions";
+  return database.ref(key).child(unique).remove();
 }
 
 function setTeamData(data, teamId) {
@@ -67,7 +111,11 @@ function setTeamData(data, teamId) {
 }
 
 function getTeamData(teamId) {
-  return database.ref("teams/" + teamId).once("value");
+  return database.ref("teams/" + teamId)
+    .once("value")
+    .then(function(snapshot) {
+      return Promise.resolve(snapshot.val());
+    });
 }
 
 module.exports = {

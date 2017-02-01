@@ -4,7 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var conversation = require('./conversation');
 var oauth = require('./oauth');
-var eventRouter = require('./event/router');
+var event = require('./event');
 var app = express();
 
 var verificationToken = process.env.SLACK_VERIFICATION_TOKEN;
@@ -22,7 +22,7 @@ app.use('/conversation', conversation);
 
 app.post('/event', function(req, res) {
   if (req.body.token === verificationToken) {
-    eventRouter.dispatch(req.body, res);
+    event.dispatch(req.body, res);
   } else {
     res.status(400).send("Bad token");
   }
