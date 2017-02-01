@@ -45,7 +45,7 @@ function startConversation({team_id, channel_id}) {
   return db.finishConversation(team_id)
     .then(function(result) {
       if (result) {
-        return reportResults(team_id, result);
+        return reportResult(team_id, result);
       } else {
         return Promise.resolve();
       }
