@@ -11,12 +11,22 @@ function unsubscribe(ref) {
   }
 }
 
-function dispatch(event, res) {
-  var callable = subscriptions[event.type];
-  for (var ref in callable) {
-    if (matches(event, callable[ref].filters)) {
-      callable[ref].callback(event, res);
+function dispatch(data, res) {
+  switch(data.type) {
+  case "url_verification":
+    res.send(event.challenge);
+    break;
+  case "event_callback":
+    var event = data.event;
+    var callable = subscriptions[event.type];
+    for (var ref in callable) {
+      if (matches(event, callable[ref].filters)) {
+        callable[ref].callback(event, res);
+      }
     }
+    break;
+  default:
+    res.status(500).send("Unkown event type: " + data.type);
   }
 }
 
@@ -28,10 +38,6 @@ function matches(event, filter) {
   }
   return true;
 }
-
-subscribe("challenge", "url_verification", {}, function(event, res) {
-  res.send(event.challenge);
-});
 
 module.exports = {
   subscribe: subscribe,

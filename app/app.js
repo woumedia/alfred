@@ -22,8 +22,7 @@ app.use('/conversation', conversation);
 
 app.post('/event', function(req, res) {
   if (req.body.token === verificationToken) {
-    console.log(req.body);
-    eventRouter.dispatch(req.body.event, res);
+    eventRouter.dispatch(req.body, res);
   } else {
     res.status(400).send("Bad token");
   }
