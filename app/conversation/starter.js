@@ -33,17 +33,19 @@ function addStarter(text, {team_id}) {
     });
 }
 
-function formatSnap(snap) {
-  return snap.key + "\t" + snap.val().text + "\n";
-}
-
 function listStarters({team_id}) {
   return db.listStarters(team_id)
     .then(function(result) {
-      var text = db.mapResult(result, formatSnap).join("\n");
+      var text = db.mapResult(result, snap => `*${snap.key}*\t${snap.val().text}`)
+          .join("\n");
       return Promise.resolve({
         response_type: "ephemeral",
-        text: "Recorded starters:\n\n" + text
+        text: `Recorded starters:\n\n
+
+\`\`\`
+${text}
+\`\`\`
+`
       });
     });
 }
