@@ -3,6 +3,7 @@ require('dotenv').config();
 var express = require('express');
 var bodyParser = require('body-parser');
 var conversation = require('./conversation');
+var oauth = require('./oauth');
 var eventRouter = require('./event/router');
 var app = express();
 
@@ -25,6 +26,15 @@ app.post('/event', function(req, res) {
   } else {
     res.status(400).send("Bad token");
   }
+});
+
+app.get('/oauth/slack', function(req, res) {
+  oauth(req.query.code)
+    .then(function() {
+      res.sendStatus(200);
+    }, function() {
+      res.sendStatus(403);
+    });
 });
 
 app.listen(app.get('port'), function () {
