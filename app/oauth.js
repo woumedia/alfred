@@ -11,8 +11,16 @@ function authenticate(code) {
 
   return slack.oauth.access(clientId, clientSecret, code)
     .then(function(resp) {
-      console.log(resp);
-      return Promise.resolve(resp);
+      return firebase.database().ref("teams/" + resp.team_id)
+        .set({
+          accessToken: resp.access_token,
+          scope: resp.scope,
+          botUserId: resp.bot.bot_user_id,
+          botAccessToken: resp.bot.bot_access_token,
+          webhookChannelId: resp.incoming_webhook.channel_id,
+          webhookUrl: resp.incoming_webhook.url,
+          webhookConfigUrl: resp.incoming_webhook.configuration_url
+        });
     });
 }
 
