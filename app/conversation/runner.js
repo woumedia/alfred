@@ -44,7 +44,7 @@ function reportResult(teamId, result) {
 function startConversation({team_id, channel_id}) {
   return db.finishConversation(team_id)
     .then(function(result) {
-      if (result) {
+      if (result && Object.keys(result).length > 0) {
         return reportResult(team_id, result);
       } else {
         return Promise.resolve();
@@ -75,7 +75,12 @@ Remember to mention me in the reply :robot_face:. All the team members can vote 
 function wrapUpConversation({team_id}) {
   return db.finishConversation(team_id)
     .then(function(results) {
-      if (results) {
+      if (results && Object.keys(result).length === 0) {
+        return Promise.resolve({
+          response_type: "in_channel",
+          text: "The conversation finished, sadly nobody answered :cold_sweat:"
+        });
+      } else if (results) {
         return Promise.resolve({
           response_type: "in_channel",
           text: buildResult(results)

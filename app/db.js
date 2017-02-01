@@ -72,6 +72,10 @@ function score(msg) {
 }
 
 function calculateResult(messages) {
+  if (_.values(messages).length === 0) {
+    return {};
+  }
+
   var winner = _.maxBy(_.values(messages), score);
   var results = _.values(messages)
       .map(msg => { return {[msg.userId]: score(msg)}; })
