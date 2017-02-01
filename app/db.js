@@ -1,4 +1,5 @@
 var firebase = require('firebase');
+var _ = require('lodash');
 
 var config = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -53,12 +54,51 @@ function mapResult(collection, callback) {
   return elements;
 }
 
-function setCurrentConversation(text, channel_id, team_id) {
+function startConversation(text, channel_id, team_id) {
   var ref = database.ref("conversations/" + team_id).push({text: text});
   return ref
     .then(function(ref) {
       return database.ref("conversations/" + team_id + "/current")
         .set({key: ref.key, channelId: channel_id, started: new Date()});
+    });
+}
+
+function updateConversation(teamId, key, data) {
+  return database.ref("conversations/" + teamId + "/" + key).update(data);
+}
+
+function score(msg) {
+  return _.size(msg.reactions);
+}
+
+function calculateResult(messages) {
+  var winner = _.maxBy(_.values(messages), score);
+  var results = _.values(messages)
+      .map(msg => { return {[msg.userId]: score(msg)}; })
+      .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => lhs + rhs));
+
+  return {
+    winner: {
+      userId: winner.userId,
+      points: _.size(winner.reactions),
+      text: winner.text
+    },
+    results: results
+  };
+}
+
+function finishConversation(teamId) {
+  return database.ref("conversations/" + teamId + "/current")
+    .once("value")
+    .then(function(snapshot) {
+      if (snapshot.exists()) {
+        var key = snapshot.val().key;
+        var messages = snapshot.val().messages;
+        var update = updateConversation(teamId, key, calculateResult(messages));
+        return Promise.all([update, snapshot.ref.remove()]);
+      } else {
+        return Promise.resolve();
+      }
     });
 }
 
@@ -126,7 +166,8 @@ module.exports = {
   getLeastUsedStarter: getLeastUsedStarter,
   removeStarter: removeStarter,
   updateStarter: updateStarter,
-  setCurrentConversation: setCurrentConversation,
+  startConversation: startConversation,
+  finishConversation: finishConversation,
   getConversationChannelId: getConversationChannelId,
   recordConversationMessage: recordConversationMessage,
   getConversationMessage: getConversationMessage,
