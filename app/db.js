@@ -68,7 +68,7 @@ function updateConversation(teamId, key, data) {
 }
 
 function score(msg) {
-  return _.size(msg.reactions) || 0;
+  return _.size(msg.reactions);
 }
 
 function calculateResult(messages) {
@@ -79,7 +79,7 @@ function calculateResult(messages) {
   var winner = _.maxBy(_.values(messages), score);
   var results = _.values(messages)
       .map(msg => { return {[msg.userId]: score(msg)}; })
-      .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => lhs + rhs));
+      .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => (lhs || 0) + rhs));
 
   return {
     winner: {
@@ -98,9 +98,7 @@ function finishConversation(teamId) {
       if (snapshot.exists()) {
         var key = snapshot.val().key;
         var messages = snapshot.val().messages;
-        console.log({messages});
         var result = calculateResult(messages);
-        console.log({result});
         var update = updateConversation(teamId, key, result);
         return Promise.all([update, snapshot.ref.remove()])
           .then(() => Promise.resolve(result));
