@@ -12,7 +12,6 @@ function unsubscribe(ref) {
 }
 
 function dispatch(data, res) {
-  console.log("incoming event", data);
   switch(data.type) {
   case "url_verification":
     res.send(data.challenge);
@@ -20,10 +19,15 @@ function dispatch(data, res) {
   case "event_callback":
     var event = data.event;
     var callable = subscriptions[event.type];
+    var matched = false;
     for (var ref in callable) {
       if (matches(event, callable[ref].filters)) {
+        matched = true;
         callable[ref].callback(event, res);
       }
+    }
+    if (!matched) {
+      res.status(204).send("");
     }
     break;
   default:
