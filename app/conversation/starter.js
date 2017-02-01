@@ -33,10 +33,20 @@ function addStarter(text, {team_id}) {
     });
 }
 
+function formatStarter(snap) {
+  var usage;
+  if (snap.val().timesUsed) {
+    usage = `\t Used ${snap.val().timesUsed} times`;
+  } else {
+    usage = "";
+  }
+  return `${snap.key}\t${snap.val().text}${usage}`;
+}
+
 function listStarters({team_id}) {
   return db.listStarters(team_id)
     .then(function(result) {
-      var text = db.mapResult(result, snap => `${snap.key}\t${snap.val().text}`)
+      var text = db.mapResult(result, formatStarter)
           .join("\n");
       return Promise.resolve({
         response_type: "ephemeral",
