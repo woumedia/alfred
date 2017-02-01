@@ -1,7 +1,7 @@
 var db = require("../db");
 
 function parseStarterCommand(text) {
-  var results = /^(add|list|remove)( (.*))?$/.exec(text);
+  var results = /^(add|list|remove|help)( (.*))?$/.exec(text);
   if (!results) {
     return invalidCommand;
   }
@@ -16,6 +16,8 @@ function parseStarterCommand(text) {
     return listStarters;
   case "remove":
     return removeStarter.bind(null, argument);
+  case "help":
+    return helpCommand;
   default:
     return invalidCommand;
   }
@@ -56,10 +58,28 @@ function removeStarter(id, {team_id}) {
     });
 }
 
+var helpMessage = `Usage: /conversation-stater command [arguments]
+
+Available commands:
+*add _Text_*  - Adds a new conversation starter to the database
+*list*        - Lists all conversation starters in the database
+*remove _Id_* - Removes a conversation starter (check *list* to get the _Id_)
+*help*        - Prints this message
+`;
+
+function helpCommand() {
+  return Promise.resolve({
+    response_type: "ephemeral",
+    text: helpMessage,
+    mrkdwn: true
+  });
+}
+
 function invalidCommand() {
   return Promise.resolve({
     response_type: "ephemeral",
-    text: "Invalid command."
+    text: "Invalid command.\n\n" + helpMessage,
+    mrkdwn: true
   });
 }
 

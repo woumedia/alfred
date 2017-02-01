@@ -4,7 +4,7 @@ var eventRouter = require("../event/router");
 var _ = require("lodash");
 
 function parseRunnerCommand(text) {
-  var results = /^(start|stats|wrap-up)( (.*))?$/.exec(text);
+  var results = /^(start|stats|wrap-up|help)( (.*))?$/.exec(text);
   if (!results) {
     return invalidCommand;
   }
@@ -19,6 +19,8 @@ function parseRunnerCommand(text) {
     return printStats;
   case "wrap-up":
     return wrapUpConversation;
+  case "help":
+    return helpCommand;
   default:
     return invalidCommand;
   }
@@ -94,10 +96,28 @@ function printStats({team_id}) {
     });
 }
 
+var helpMessage = `Usage: /conversation command
+
+Available commands:
+*start*   - starts a conversation (terminating any previous ones)
+*wrap-up* - terminates a conversation and prints point statistics
+*stats*   - prints leaderboard
+*help*    - prints this message
+`;
+
+function helpCommand() {
+  return Promise.resolve({
+    response_type: "ephemeral",
+    text: helpMessage,
+    mrkdwn: true
+  });
+}
+
 function invalidCommand() {
   return Promise.resolve({
     response_type: "ephemeral",
-    text: "Invalid command."
+    text: "Invalid command.\n\n" + helpMessage,
+    mrkdwn: true
   });
 }
 
