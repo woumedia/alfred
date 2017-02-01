@@ -28,9 +28,9 @@ function parseRunnerCommand(text) {
 
 function buildResult(result) {
   var allResults = Object.keys(result.results)
-      .map(userId => `<@${userId}> got ${result.results[userId]} points`)
+      .map(userId => `<@${userId}> got ${result.results[userId]} points :+1:`)
       .join("\n");
-  var winner =  `<@${result.winner.userId}> is winning with ${result.winner.points} points\n\n`;
+  var winner =  `<@${result.winner.userId}> is winning with ${result.winner.points} points :boom::tada::confetti_ball:\n\n`;
 
   return winner + allResults;
 }
@@ -63,7 +63,10 @@ function startConversation({team_id, channel_id}) {
         .then(function() {
           return Promise.resolve({
             response_type: "in_channel",
-            text: "Today's topic: " + text
+            text: `Today's topic ${text} :nerd_face:
+
+Remember to mention me in the reply:robot_face:. All the team members can vote for the best share by adding reactions to posts. Post with the most reactions wins!:raised_hands:
+`
           });
         });
     });
