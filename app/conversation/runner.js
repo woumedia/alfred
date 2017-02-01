@@ -75,7 +75,7 @@ Remember to mention me in the reply :robot_face:. All the team members can vote 
 function wrapUpConversation({team_id}) {
   return db.finishConversation(team_id)
     .then(function(results) {
-      if (results && Object.keys(result).length === 0) {
+      if (results && Object.keys(results).length === 0) {
         return Promise.resolve({
           response_type: "in_channel",
           text: "The conversation finished, sadly nobody answered :cold_sweat:"
