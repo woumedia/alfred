@@ -36,11 +36,11 @@ function addStarter(text, {team_id}) {
 function formatStarter(snap) {
   var usage;
   if (snap.val().timesUsed) {
-    usage = `\t Used ${snap.val().timesUsed} times`;
+    usage = `\t(${snap.val().timesUsed} times)`;
   } else {
-    usage = "";
+    usage = "\t(0 times)";
   }
-  return `${snap.key}\t${snap.val().text}${usage}`;
+  return `${snap.key}${usage}\t${snap.val().text}`;
 }
 
 function listStarters({team_id}) {
