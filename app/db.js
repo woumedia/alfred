@@ -81,7 +81,7 @@ function calculateResult(messages) {
     winner: {
       userId: winner.userId,
       points: _.size(winner.reactions),
-      text: winner.texdb.getTeamt
+      text: winner.text
     },
     results: results
   };
