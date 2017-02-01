@@ -12,5 +12,6 @@ function webhook(url, msg) {
 
 module.exports = {
   oauth: web.oauth,
+  channels: web.channels,
   webhook: webhook
 };
