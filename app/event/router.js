@@ -14,7 +14,7 @@ function unsubscribe(ref) {
 function dispatch(data, res) {
   switch(data.type) {
   case "url_verification":
-    res.send(event.challenge);
+    res.send(data.challenge);
     break;
   case "event_callback":
     var event = data.event;
