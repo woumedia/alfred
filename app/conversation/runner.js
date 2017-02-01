@@ -100,10 +100,17 @@ function wrapUpConversation({team_id}) {
 function printStats({team_id}) {
   return db.loadStats(team_id)
     .then(function(stats) {
-      return Promise.resolve({
-        response_type: "ephemeral",
-        text: buildResult(stats)
-      });
+      if (Object.keys(stats).length === 0) {
+        return Promise.resolve({
+          response_type: "ephemeral",
+          text: "No recorded stats yet. Type `/conversation start`"
+        });
+      } else {
+        return Promise.resolve({
+          response_type: "ephemeral",
+          text: buildResult(stats)
+        });
+      }
     });
 }
 
