@@ -12,13 +12,13 @@ function unsubscribe(ref) {
 }
 
 function dispatch(data, res) {
+  console.log("incoming event", data);
   switch(data.type) {
   case "url_verification":
     res.send(data.challenge);
     break;
   case "event_callback":
     var event = data.event;
-    console.log("incoming event", event);
     var callable = subscriptions[event.type];
     for (var ref in callable) {
       if (matches(event, callable[ref].filters)) {
