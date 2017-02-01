@@ -87,7 +87,6 @@ function wrapUpConversation({team_id}) {
 function printStats({team_id}) {
   return db.loadStats(team_id)
     .then(function(stats) {
-      console.log({stats});
       return Promise.resolve({
         response_type: "ephemeral",
         text: buildResult(stats)
