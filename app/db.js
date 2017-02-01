@@ -113,7 +113,7 @@ function loadStats(teamId) {
     .once("value")
     .then(function(snapshot) {
       var results = _.compact(_.map(snapshot.val(), 'results'))
-          .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => lhs + rhs));
+          .reduce((acc, elem) => _.mergeWith(acc, elem, (lhs, rhs) => (lhs || 0) + rhs));
       var unzipped = _.toPairs(results)
           .map(([userId, points]) => { return {userId, points}; });
       var winner = _.maxBy(unzipped, 'points');
