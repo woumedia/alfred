@@ -99,10 +99,12 @@ function printStats({team_id}) {
 var helpMessage = `Usage: /conversation command
 
 Available commands:
+\`\`\`
 *start*   - starts a conversation (terminating any previous ones)
 *wrap-up* - terminates a conversation and prints point statistics
 *stats*   - prints leaderboard
 *help*    - prints this message
+\`\`\`
 `;
 
 function helpCommand() {

@@ -61,10 +61,12 @@ function removeStarter(id, {team_id}) {
 var helpMessage = `Usage: /conversation-stater command [arguments]
 
 Available commands:
+\`\`\`
 *add _Text_*  - Adds a new conversation starter to the database
 *list*        - Lists all conversation starters in the database
 *remove _Id_* - Removes a conversation starter (check *list* to get the _Id_)
 *help*        - Prints this message
+\`\`\`
 `;
 
 function helpCommand() {
