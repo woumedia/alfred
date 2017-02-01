@@ -68,7 +68,7 @@ function updateConversation(teamId, key, data) {
 }
 
 function score(msg) {
-  return _.size(msg.reactions);
+  return _.size(msg.reactions) || 0;
 }
 
 function calculateResult(messages) {
