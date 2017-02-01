@@ -63,7 +63,7 @@ function setCurrentConversation(text, channel_id, team_id) {
 }
 
 function getConversationChannelId(teamId) {
-  return database.ref("conversations/" + team_id + "/current/channelId")
+  return database.ref("conversations/" + teamId + "/current/channelId")
     .once("value")
     .then(function(snapshot) {
       if (snapshot.exists()) {
@@ -74,8 +74,12 @@ function getConversationChannelId(teamId) {
     });
 }
 
+function messageKey(teamId, ts) {
+  return "conversations/" + teamId + "/current/messages/" + ts.replace(".", "-");
+}
+
 function recordConversationMessage(text, userId, ts, teamId) {
-  return database.ref("conversations/" + teamId + "/current/messages/" + ts)
+  return database.ref(messageKey(teamId, ts))
     .set({
       text: text,
       userId: userId
@@ -83,7 +87,7 @@ function recordConversationMessage(text, userId, ts, teamId) {
 }
 
 function getConversationMessage(ts, teamId) {
-  return database.ref("conversations/" + teamId + "/current/messages/" + ts)
+  return database.ref(messageKey(teamId, ts))
     .once("value")
     .then(function(snapshot) {
       if (snapshot.exists()) {
@@ -95,15 +99,13 @@ function getConversationMessage(ts, teamId) {
 }
 
 function addReaction(ts, userId, reaction, teamId) {
-  var unique = userId + "-" + reaction;
-  var key = "conversations/" + teamId + "/current/messages/" + ts + "/reactions";
-  return database.ref(key).child(unique).set(true);
+  var key = messageKey(teamId, ts) + "/reactions/" + userId + "-" + reaction;
+  return database.ref(key).set(true);
 }
 
 function removeReaction(ts, userId, reaction, teamId) {
-  var unique = userId + "-" + reaction;
-  var key = "conversations/" + teamId + "/current/messages/" + ts + "/reactions";
-  return database.ref(key).child(unique).remove();
+  var key = messageKey(teamId, ts) + "/reactions/" + userId + "-" + reaction;
+  return database.ref(key).remove();
 }
 
 function setTeamData(data, teamId) {
@@ -125,6 +127,11 @@ module.exports = {
   removeStarter: removeStarter,
   updateStarter: updateStarter,
   setCurrentConversation: setCurrentConversation,
+  getConversationChannelId: getConversationChannelId,
+  recordConversationMessage: recordConversationMessage,
+  getConversationMessage: getConversationMessage,
+  addReaction: addReaction,
+  removeReaction: removeReaction,
   setTeamData: setTeamData,
   getTeamData: getTeamData,
   mapResult: mapResult
