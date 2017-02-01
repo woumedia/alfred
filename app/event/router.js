@@ -29,6 +29,10 @@ function matches(event, filter) {
   return true;
 }
 
+eventRouter.subscribe("challenge", "url_verification", {}, function(event, res) {
+  res.send(event.challenge);
+});
+
 module.exports = {
   subscribe: subscribe,
   unsubscribe: unsubscribe,

@@ -7,7 +7,7 @@ var oauth = require('./oauth');
 var eventRouter = require('./event/router');
 var app = express();
 
-var eventVerification = process.env.SLACK_EVENT_TOKEN;
+var verificationToken = process.env.SLACK_VERIFICATION_TOKEN;
 
 app.set('port', (process.env.PORT || 8080));
 
@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 app.use('/conversation', conversation);
 
 app.post('/event', function(req, res) {
-  if (req.body.token == eventVerification) {
+  if (req.body.token === verificationToken) {
     eventRouter.dispatch(req.body.event, res);
   } else {
     res.status(400).send("Bad token");
