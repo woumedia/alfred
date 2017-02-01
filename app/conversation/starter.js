@@ -1,4 +1,4 @@
-var db = require("./db");
+var db = require("../db");
 
 function parseStarterCommand(text) {
   var results = /^(add|list|remove)( (.*))?$/.exec(text);

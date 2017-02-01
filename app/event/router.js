@@ -1,8 +1,9 @@
 var subscriptions = {};
 
-function subscribe(ref, eventType, filters, callback) {
+function subscribe(ref, eventType, teamId, filters, callback) {
   subscriptions[eventType] = subscriptions[eventType] || {};
-  subscriptions[eventType][ref] = {filters, callback};
+  subscriptions[eventType][teamId] = subscriptions[eventType][teamId] || {};
+  subscriptions[eventType][teamId][ref] = {filters, callback};
 }
 
 function unsubscribe(ref) {
@@ -18,7 +19,7 @@ function dispatch(data, res) {
     break;
   case "event_callback":
     var event = data.event;
-    var callable = subscriptions[event.type];
+    var callable = subscriptions[event.type][data.team_id] || {};
     var matched = false;
     for (var ref in callable) {
       if (matches(event, callable[ref].filters)) {

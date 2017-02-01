@@ -1,4 +1,15 @@
-var firebase = require('../firebase-client');
+var firebase = require('firebase');
+
+var config = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_SENDER_ID
+};
+
+firebase.initializeApp(config);
+
 var database = firebase.database();
 
 function addStarter(text, team_id) {
@@ -51,6 +62,14 @@ function setCurrentConversation(text, channel_id, team_id) {
     });
 }
 
+function setTeamData(data, teamId) {
+  return database.ref("teams/" + teamId).set(data);
+}
+
+function getTeamData(teamId) {
+  return database.ref("teams/" + teamId).once("value");
+}
+
 module.exports = {
   addStarter: addStarter,
   listStarters: listStarters,
@@ -58,5 +77,7 @@ module.exports = {
   removeStarter: removeStarter,
   updateStarter: updateStarter,
   setCurrentConversation: setCurrentConversation,
+  setTeamData: setTeamData,
+  getTeamData: getTeamData,
   mapResult: mapResult
 };

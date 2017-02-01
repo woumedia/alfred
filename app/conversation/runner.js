@@ -1,4 +1,5 @@
-var db = require("./db");
+var db = require("../db");
+var eventRouter = require("../event/router");
 
 function parseRunnerCommand(text) {
   var results = /^(start|stats)( (.*))?$/.exec(text);
