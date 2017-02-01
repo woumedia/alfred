@@ -63,10 +63,17 @@ ${text}
 function removeStarter(id, {team_id}) {
   return db.removeStarter(id, team_id)
     .then(function(snapshot) {
-      return Promise.resolve({
-        response_type: "ephemeral",
-        text: "Removed conversation starter: " + snapshot.val().text
-      });
+      if (snapshot.val()) {
+        return Promise.resolve({
+          response_type: "ephemeral",
+          text: "Removed conversation starter: " + snapshot.val().text
+        });
+      } else {
+        return Promise.resolve({
+          response_type: "ephemeral",
+          text: "Privided Id does not exist. Use `/conversation-starter list` to check the conversation starter database"
+        });
+      }
     });
 }
 
