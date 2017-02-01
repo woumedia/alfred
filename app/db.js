@@ -94,8 +94,10 @@ function finishConversation(teamId) {
       if (snapshot.exists()) {
         var key = snapshot.val().key;
         var messages = snapshot.val().messages;
-        var update = updateConversation(teamId, key, calculateResult(messages));
-        return Promise.all([update, snapshot.ref.remove()]);
+        var result = calculateResult(messages);
+        var update = updateConversation(teamId, key, result);
+        return Promise.all([update, snapshot.ref.remove()])
+          .then(() => Promise.resolve(result));
       } else {
         return Promise.resolve();
       }
