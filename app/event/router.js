@@ -16,7 +16,7 @@ function dispatch(data, res) {
     callbacks.forEach(function(callback) {
       callback(event);
     });
-    console.info("Event: " + event.type + " processed by " + callbacks.length + " handlers");
+    console.info("Event: '" + event.type + "' processed by " + callbacks.length + " handlers");
     res.status(204).send("");
     break;
   default:

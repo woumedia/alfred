@@ -1,7 +1,7 @@
 var router = require("./event/router");
 var db = require("./db");
 
-router.subscribe("message.channels", function(teamId, event) {
+router.subscribe("message", function(teamId, event) {
   db.getConversationChannelId(teamId)
     .then(function(channelId) {
       if (event.channel === channelId) {
