@@ -98,7 +98,9 @@ function finishConversation(teamId) {
       if (snapshot.exists()) {
         var key = snapshot.val().key;
         var messages = snapshot.val().messages;
+        console.log({messages});
         var result = calculateResult(messages);
+        console.log({result});
         var update = updateConversation(teamId, key, result);
         return Promise.all([update, snapshot.ref.remove()])
           .then(() => Promise.resolve(result));
