@@ -18,6 +18,7 @@ function dispatch(data, res) {
     break;
   case "event_callback":
     var event = data.event;
+    console.log("incoming event", event);
     var callable = subscriptions[event.type];
     for (var ref in callable) {
       if (matches(event, callable[ref].filters)) {
